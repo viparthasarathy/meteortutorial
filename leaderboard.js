@@ -9,11 +9,12 @@ if(Meteor.isClient){
 
 	Template.leaderboard.events({
 
-		'click': function(){
-			console.log("You clicked something");
+		'click .player': function(){
+			console.log("You clicked an .player element");
+			Session.set('SelectedPlayer', 'session value test');
+			var selectedPlayer = Session.get('selectedPlayer');
 
 		}
-
 	});
 }
 
