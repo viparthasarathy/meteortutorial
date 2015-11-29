@@ -3,7 +3,7 @@ playersList = new Mongo.Collection('players');
 if(Meteor.isClient){
 	Template.leaderboard.helpers({
 		'player': function(){
-			return playersList.find();
+			return playersList.find({}, {sort: {score: -1, name: 1} });
 		},
 
 		'selectedClass': function(){
@@ -12,8 +12,15 @@ if(Meteor.isClient){
 			if(playerId == selectedPlayer) {
 				return "selected";
 			}
+		},
 
-		}
+
+		'showSelectedPlayer': function(){
+			var selectedPlayer = Session.get('selectedPlayer'); 
+			return playersList.findOne(selectedPlayer)
+		}	
+
+
 	});
 
 	Template.leaderboard.events({
