@@ -3,7 +3,8 @@ playersList = new Mongo.Collection('players');
 if(Meteor.isClient){
 	Template.leaderboard.helpers({
 		'player': function(){
-			return playersList.find({}, {sort: {score: -1, name: 1} });
+			var currentUserId = Meteor.userId();
+			return playersList.find({createdBy: currentUserId}, {sort: {score: -1, name: 1} });
 		},
 
 		'selectedClass': function(){
@@ -39,7 +40,30 @@ if(Meteor.isClient){
 		'click .decrement': function(){
 			var selectedPlayer = Session.get('selectedPlayer');
 			playersList.update(selectedPlayer, {$inc: {score: -5} });
+		},
+
+		'click .remove': function(){
+			var selectedPlayer = Session.get('selectedPlayer');
+			playersList.remove(selectedPlayer);
 		}
+	});
+
+	Template.addPlayerForm.events({
+
+		'submit form': function(){
+			event.preventDefault();
+			var playerNameVar = event.target.playerName.value;
+			var currentUserId = Meteor.userId();
+			event.target.playerName.value = "";
+
+			playersList.insert({
+				name: playerNameVar,
+				score: 0,
+				createdBy: currentUserId
+			});
+		}
+
+
 	});
 
 }
